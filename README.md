@@ -1,6 +1,22 @@
 # 🚀 Dotix Job Scheduler & Automation Engine
 
-A high-performance mini-automation engine built for Dotix Technologies. This system allows users to create, schedule, and monitor background tasks with real-time status updates and automated outbound webhook notifications.
+A high-performance mini automation engine built for **Dotix Technologies**.
+This system allows users to create, schedule, execute, and monitor background jobs with real-time status updates and automated outbound webhook notifications.
+
+---
+
+## 🌐 Live Deployment URLs
+
+* **GitHub Repository:**
+  [https://github.com/Saichandanyadav/chandan-system-job-scheduler](https://github.com/Saichandanyadav/chandan-system-job-scheduler)
+
+* **Backend API (Production):**
+  [https://chandan-system-job-scheduler-production.up.railway.app/api/jobs](https://chandan-system-job-scheduler-production.up.railway.app/api/jobs)
+
+* **Frontend Application (Production):**
+  [https://chandan-system-job-scheduler.vercel.app/](https://chandan-system-job-scheduler.vercel.app/)
+
+---
 
 ## 📂 Project Directory Layout
 
@@ -21,7 +37,7 @@ A high-performance mini-automation engine built for Dotix Technologies. This sys
 │   ├── .env.local
 │   └── package.json
 └── README.md
-````
+```
 
 ---
 
@@ -32,15 +48,15 @@ A high-performance mini-automation engine built for Dotix Technologies. This sys
 * Next.js 14 (App Router)
 * Tailwind CSS
 * Shadcn UI + Lucide Icons
-* React Hooks (useState, useEffect)
+* React Hooks (`useState`, `useEffect`)
 * TypeScript
 
 ### Backend
 
 * Node.js
 * Express.js
-* Sequelize (MySQL)
-* Axios (for outbound webhooks)
+* Sequelize ORM
+* Axios (Outbound Webhooks)
 
 ### Database
 
@@ -48,50 +64,64 @@ A high-performance mini-automation engine built for Dotix Technologies. This sys
 
 ---
 
-## 🏗️ Architecture & Logic
+## 🏗️ Architecture & Execution Flow
 
-The system follows an **Event-Driven Asynchronous Pattern**:
+The system follows an **Event-Driven Asynchronous Architecture**:
 
-1. Job Creation: User submits a task, saved with `pending` status.
-2. Job Execution: Clicking "Run" sets status to `running`.
-3. Simulated Processing: Backend uses a 3-second `setTimeout` to mimic workload.
-4. Completion & Webhook: Status becomes `completed` and an outbound `POST` request is triggered to the configured Webhook URL.
+1. **Job Creation**
+   User creates a task → saved with `pending` status.
+
+2. **Job Execution**
+   Clicking **Run** updates status to `running`.
+
+3. **Simulated Processing**
+   Backend simulates workload using a 3-second `setTimeout`.
+
+4. **Completion & Webhook Trigger**
+   Status updates to `completed`, and an outbound `POST` request is sent to the configured webhook URL.
 
 ---
 
 ## 📊 Database Schema
 
-| Field       | Type     | Attributes                                  |
-| ----------- | -------- | ------------------------------------------- |
-| `id`        | Integer  | Primary Key, Auto-Increment                 |
-| `taskName`  | String   | Not Null                                    |
-| `payload`   | JSON     | Not Null                                    |
-| `priority`  | Enum     | 'Low', 'Medium', 'High'                     |
-| `status`    | Enum     | 'pending', 'running', 'completed', 'failed' |
-| `createdAt` | DateTime | Auto-generated                              |
-| `updatedAt` | DateTime | Auto-generated                              |
+| Field       | Type     | Attributes                          |
+| ----------- | -------- | ----------------------------------- |
+| `id`        | Integer  | Primary Key, Auto Increment         |
+| `taskName`  | String   | Required                            |
+| `payload`   | JSON     | Required                            |
+| `priority`  | Enum     | Low, Medium, High                   |
+| `status`    | Enum     | pending, running, completed, failed |
+| `createdAt` | DateTime | Auto-generated                      |
+| `updatedAt` | DateTime | Auto-generated                      |
 
 ---
 
 ## 🔌 API Documentation
 
-### Job Management
+### Job Management APIs
 
-* `POST /api/jobs` — Creates a new job.
-* `GET /api/jobs` — Lists all jobs. Query params: `?status=pending&priority=High`.
-* `GET /api/jobs/:id` — Returns specific job details.
+* `POST /api/jobs`
+  Creates a new job.
 
-### Job Runner
+* `GET /api/jobs`
+  Fetches all jobs.
+  Supports filters: `?status=pending&priority=High`
 
-* `POST /api/run-job/:id` — Triggers status transition and webhook.
+* `GET /api/jobs/:id`
+  Fetches job details by ID.
+
+### Job Execution API
+
+* `POST /api/run-job/:id`
+  Executes a job and triggers webhook on completion.
 
 ---
 
 ## 🪝 Webhook Integration
 
-When a job reaches `completed`, the backend triggers a `POST` request to `WEBHOOK_URL`.
+Once a job reaches `completed` status, the backend automatically fires a webhook.
 
-**Payload:**
+**Sample Webhook Payload:**
 
 ```json
 {
@@ -107,73 +137,92 @@ When a job reaches `completed`, the backend triggers a `POST` request to `WEBHOO
 }
 ```
 
+Webhook testing is performed using **webhook.site** for real-time verification.
+
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Local Setup Instructions
 
-### Database
+### Database Setup
 
-Ensure MySQL is running and create a database `job_scheduler_db`.
+* Ensure MySQL is running
+* Create database: `job_scheduler_db`
 
-### Backend
+### Backend Setup
 
 ```bash
 cd backend
 npm install
-# Add .env with:
-# PORT=5000
-# DB_NAME=job_scheduler_db
-# DB_USER=root
-# DB_PASSWORD=
-# DB_HOST=
-# DB_PORT=
-# WEBHOOK_URL=https://webhook.site/<your-id>
-npm run dev
 ```
 
-### Frontend
+Create `.env` file:
+
+```env
+PORT=5000
+DB_NAME=job_scheduler_db
+DB_USER=root
+DB_PASSWORD=
+DB_HOST=localhost
+DB_PORT=3306
+WEBHOOK_URL=https://webhook.site/<your-id>
+```
+
+Run backend:
 
 ```bash
-cd frontend
-npm install
-# Add .env.local with:
-# NEXT_PUBLIC_API_URL=http://localhost:5000/api
 npm run dev
 ```
 
 ---
 
-## 🤖 AI Usage Log
+### Frontend Setup
 
-AI assistance was used to refine architectural patterns, optimize backend logic, and ensure strict TypeScript typing.
+```bash
+cd frontend
+npm install
+```
 
-* **AI Tools Used:** Gemini
-* **Model Name:** Gemini 2.0 Flash
-* **Assisted With:**
+Create `.env.local` file:
 
-  * Background task runner async logic
-  * Sequelize → TypeScript interface mapping
-  * Error handling improvements
-  * Dashboard UI refinements
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
 
-**Prompts Examples:**
+Run frontend:
 
-1. Define strict TypeScript interfaces for Job entities compatible with Sequelize JSON.
-2. Optimize Express job runner async state transitions for webhook reliability.
-3. Review Sequelize/MySQL config for production readiness.
-4. Generate structured technical documentation including API endpoints and webhook payloads.
+```bash
+npm run dev
+```
+
+---
+
+## 🤖 AI Usage Disclosure
+
+AI assistance was used to improve system architecture, backend logic, and documentation clarity.
+
+* **AI Tool Used:** Gemini
+* **Model:** Gemini 2.0 Flash
+
+### Assisted Areas:
+
+* Asynchronous job execution logic
+* Sequelize + MySQL data modeling
+* Error handling and production readiness
+* API documentation structuring
+* UI workflow optimizations
 
 ---
 
 ## ✅ Key Features Implemented
 
-* Job creation, listing, and detail view.
-* Real-time job status updates.
-* Priority and status filters.
-* Job execution simulation.
-* Webhook integration and logging.
-* Responsive and clean UI using Tailwind + Shadcn UI.
-* Backend production-readiness with environment configs and error handling.
+* Job creation and management
+* Priority-based scheduling
+* Real-time status updates
+* Webhook automation
+* Backend simulation engine
+* Production deployment (Railway + Vercel)
+* Responsive UI with modern design
+* Clean architecture and scalable structure
 
 ---
 
@@ -181,8 +230,7 @@ AI assistance was used to refine architectural patterns, optimize backend logic,
 
 **Name:** Sai Chandan Gundaboina
 **Role:** Full Stack Developer
-**GitHub:** [https://github.com/Saichandanyadav](https://github.com/Saichandanyadav)
-**LinkedIn:** [https://www.linkedin.com/in/saichandanyadav/](https://www.linkedin.com/in/Saichandanyadav/)
-**Email:** [saichandhanyadav2002@gmail.com](mailto:saichandhanyadav2002@gmail.com)
 
-```
+* **GitHub:** [https://github.com/Saichandanyadav](https://github.com/Saichandanyadav)
+* **LinkedIn:** [https://www.linkedin.com/in/saichandanyadav/](https://www.linkedin.com/in/saichandanyadav/)
+* **Email:** [saichandhanyadav2002@gmail.com](mailto:saichandhanyadav2002@gmail.com)
